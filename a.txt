@@ -1,0 +1,20 @@
+curl -X GET "localhost:9200/news-index/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "match": {
+      "content": "test content"
+    }
+  }
+}
+'
+
+curl -X DELETE "localhost:9200/news_index?pretty"
+
+
+curl -X GET "localhost:8000/search" -H 'Content-Type: application/json' -d'
+{
+  "content": "test",
+  "start": 0,
+  "end": 3
+}
+'
