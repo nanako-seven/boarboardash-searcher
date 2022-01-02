@@ -6,10 +6,11 @@ from config import es_host, es_port, index_name
 
 es = Elasticsearch([{"host": es_host, "port": es_port}])
 
-if (not es.ping()):
-    raise "es not running."
+# if (not es.ping()):
+#     raise "es not running."
 
-class NewsQuery(BaseModel):
+
+class SearchNewsRequest(BaseModel):
     content: str
     categories: Optional[List[str]]
     date_from: Optional[datetime.date]
@@ -17,23 +18,23 @@ class NewsQuery(BaseModel):
     end: int
 
 
-def search(q: NewsQuery):
+def search_news(q: SearchNewsRequest):
     query = {
         'from': q.start,
         'size': q.end - q.start,
         "query": {
-            "bool" : {
-                "must" : {
-                    "match" : { "content" : q.content }
+            "bool": {
+                "must": {
+                    "match": {"content": q.content}
                 },
                 'filter': [],
             }
         },
         "highlight": {
-            "pre_tags" : ["<em>"],
-            "post_tags" : ["</em>"],
-            "number_of_fragments" : 1,
-            "fragment_size" : 100,
+            "pre_tags": ["<em>"],
+            "post_tags": ["</em>"],
+            "number_of_fragments": 1,
+            "fragment_size": 100,
             "fields": {
                 "content": {}
             }
@@ -41,17 +42,17 @@ def search(q: NewsQuery):
     }
     a: list = query['query']['bool']['filter']
     if q.categories:
-        a.append({'terms' : {'category': q.categories}})
+        a.append({'terms': {'category': q.categories}})
     if q.date_from:
         a.append({'range': {'date': {'gte': q.date_from}}})
-        
 
     result = es.search(index=index_name, body=query)
     return {'hits': [extract(x) for x in result['hits']['hits']]}
 
+
 def extract(x):
     s = x['_source']
-    highlight =  x['highlight']['content']
+    highlight = x['highlight']['content']
     return {
         'title': s['title'],
         'url': s['url'],
@@ -73,5 +74,5 @@ class NewsElement(BaseModel):
 # es.index(index=index_name, body=elem)
 
 
-def add(e: NewsElement):
+def add_news(e: NewsElement):
     es.index(index=index_name, body=dict(e))
