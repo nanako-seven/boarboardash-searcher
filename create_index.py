@@ -1,8 +1,9 @@
 from elasticsearch import Elasticsearch
 from pydantic import BaseModel
 import datetime
+from config import es_host, es_port, index_name
 
-es = Elasticsearch([{"host": "localhost", "port": 9200}])
+es = Elasticsearch([{"host": es_host, "port": es_port}])
 
 if (not es.ping()):
     raise "es not running."
@@ -51,15 +52,4 @@ news_mappings = {
     }
 }
 
-es.indices.create(index='news-index', body=news_mappings)
-
-class NewsElement(BaseModel):
-    content: str
-    title: str
-    url: str
-    category: str
-    date: datetime.date
-
-elem = dict(NewsElement(content="test content", title='test title', url='http://example.com', category='test category', date=datetime.date(2002, 1, 1)))
-
-es.index(index="news-index", body=elem)
+es.indices.create(index=index_name, body=news_mappings)

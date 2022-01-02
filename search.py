@@ -2,12 +2,12 @@ from elasticsearch import Elasticsearch
 from pydantic import BaseModel
 import datetime
 from typing import Optional, List
+from config import es_host, es_port, index_name
 
-es = Elasticsearch([{"host": "localhost", "port": 9200}])
+es = Elasticsearch([{"host": es_host, "port": es_port}])
 
 if (not es.ping()):
     raise "es not running."
-print('ok')
 
 class NewsQuery(BaseModel):
     content: str
@@ -46,7 +46,7 @@ def search(q: NewsQuery):
         a.append({'range': {'date': {'gte': q.date_from}}})
         
 
-    result = es.search(index="news-index", body=query)
+    result = es.search(index=index_name, body=query)
     return {'hits': [extract(x) for x in result['hits']['hits']]}
 
 def extract(x):
@@ -60,3 +60,18 @@ def extract(x):
 
 # query = NewsQuery(content='test', categories=['category'], date_from=datetime.date(2002, 1, 1), start=0, end=4)
 # print(search(query))
+
+
+class NewsElement(BaseModel):
+    content: str
+    title: str
+    url: str
+    category: str
+    date: datetime.date
+
+# elem = dict(NewsElement(content="test content", title='test title', url='http://example.com', category='test category', date=datetime.date(2002, 1, 1)))
+# es.index(index=index_name, body=elem)
+
+
+def add(e: NewsElement):
+    es.index(index=index_name, body=dict(e))
