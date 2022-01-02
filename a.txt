@@ -2,7 +2,7 @@ curl -X GET "localhost:9200/news-index/_search?pretty" -H 'Content-Type: applica
 {
   "query": {
     "match": {
-      "content": "test content"
+      "content": "美国"
     }
   }
 }

@@ -16,3 +16,8 @@ async def add_api(req: Request):
     e = NewsElement(content=json['content'], title=json['title'], url=json['url'], category=json['category'], date=json['date'])
     add(e)
     return {'status': 'ok'}
+
+@app.post('/_internal/add-image')
+async def search_api(req: Request):
+    json = await req.json()
+    return {'status': 'ok'}
