@@ -1,3 +1,12 @@
+temp
+config.py
+*.db
+*.jpg
+*.jpeg
+*.png
+*.bmp
+
+# ---------------------------------
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
