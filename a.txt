@@ -11,10 +11,12 @@ curl -X GET "localhost:9200/news-index/_search?pretty" -H 'Content-Type: applica
 curl -X DELETE "localhost:9200/news_index?pretty"
 
 
-curl -X GET "localhost:8000/search" -H 'Content-Type: application/json' -d'
+curl -X POST "localhost:8000/search-news" -H 'Content-Type: application/json' -d'
 {
-  "content": "test",
+  "content": "美国",
   "start": 0,
-  "end": 3
+  "end": 100,
+  "categories": ["国际"],
+  "date_from": "2022-01-03"
 }
 '

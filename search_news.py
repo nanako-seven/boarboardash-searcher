@@ -45,7 +45,7 @@ def search_news(q: SearchNewsRequest):
         a.append({'terms': {'category': q.categories}})
     if q.date_from:
         a.append({'range': {'date': {'gte': q.date_from}}})
-
+    print(q.categories)
     result = es.search(index=index_name, body=query)
     return {'hits': [extract(x) for x in result['hits']['hits']]}
 
