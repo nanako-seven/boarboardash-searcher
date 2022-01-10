@@ -78,11 +78,14 @@ async def download(url, path):
 
 @app.post('/_internal/add-image')
 async def search_api(req: Request):
-    json = await req.json()
-    n = random.randint(0, 1000000)
-    ext = json['url'].split('.')[-1]
-    download_path = f'temp/{n}.{ext}'
-    await download(json['url'], download_path)
-    h = get_image_hash(download_path).dumps()
-    await Image.objects.create(url=json['url'], hash=h)
-    return {'status': 'ok'}
+    try:
+        json = await req.json()
+        n = random.randint(0, 1000000)
+        ext = json['url'].split('.')[-1]
+        download_path = f'temp/{n}.{ext}'
+        await download(json['url'], download_path)
+        h = get_image_hash(download_path).dumps()
+        await Image.objects.create(url=json['url'], hash=h)
+        return {'status': 'ok'}
+    except:
+        return {'status': 'error'}
