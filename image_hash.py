@@ -10,7 +10,7 @@ from torchvision.datasets.folder import default_loader
 
 
 print('Load model: vgg19')
-model = torchvision.models.vgg19(True, True)
+model = torchvision.models.vgg19(True)
 # print(model)
 
 normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
