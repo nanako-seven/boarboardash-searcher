@@ -19,6 +19,9 @@ class SearchNewsRequest(BaseModel):
 
 
 def search_news(q: SearchNewsRequest):
+    '''
+    根据q构造elasticsearch的请求，返回搜索结果
+    '''
     query = {
         'from': q.start,
         'size': q.end - q.start,
@@ -51,6 +54,9 @@ def search_news(q: SearchNewsRequest):
 
 
 def extract(x):
+    '''
+    从elasticsearch的返回值中提取需要的信息
+    '''
     s = x['_source']
     highlight = x['highlight']['content']
     return {
@@ -70,9 +76,9 @@ class NewsElement(BaseModel):
     category: str
     date: datetime.date
 
-# elem = dict(NewsElement(content="test content", title='test title', url='http://example.com', category='test category', date=datetime.date(2002, 1, 1)))
-# es.index(index=index_name, body=elem)
-
 
 def add_news(e: NewsElement):
+    '''
+    添加新闻
+    '''
     es.index(index=index_name, body=dict(e))

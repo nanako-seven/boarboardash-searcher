@@ -28,8 +28,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.post('/search-news')
 async def search_api(req: Request):
+    '''
+    搜索新闻的API，请求是SearchNewsRequest
+    '''
     json = await req.json()
     return search_news(SearchNewsRequest(**json))
 
@@ -41,6 +45,9 @@ async def get_similarities(src: np.ndarray) -> List[Tuple[str, float]]:
 
 @app.post('/search-images')
 async def search_images_api(req: Request):
+    '''
+    搜索图片的API，请求是SearchImagesRequest
+    '''
     json = await req.json()
     r = SearchImagesRequest(**json)
     data = base64.b64decode(r.data)
@@ -58,7 +65,10 @@ async def search_images_api(req: Request):
 
 
 @app.post('/_internal/add-news')
-async def add_api(req: Request):
+async def add_news_api(req: Request):
+    '''
+    添加新闻的API，不对外公开
+    '''
     json = await req.json()
     json['date'] = datetime.strptime(json['date'], '%Y-%m-%d').date()
     e = NewsElement(content=json['content'], title=json['title'],
@@ -77,7 +87,10 @@ async def download(url, path):
 
 
 @app.post('/_internal/add-image')
-async def search_api(req: Request):
+async def add_image_api(req: Request):
+    '''
+    添加图片的API，不对外公开
+    '''
     json = await req.json()
     n = random.randint(0, 1000000)
     ext = json['url'].split('.')[-1]

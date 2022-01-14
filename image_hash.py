@@ -24,6 +24,9 @@ trans = transforms.Compose([
 
 
 def get_image_hash(path: str) -> np.ndarray:
+    '''
+    读取路径为path的图片，返回其hash（一个向量）
+    '''
     input_image = default_loader(path)
     input_image = trans(input_image)
     input_image = torch.unsqueeze(input_image, 0)
